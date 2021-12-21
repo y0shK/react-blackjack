@@ -1,0 +1,34 @@
+body {
+  background-color: #35654d;
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+}
+
+button {
+  display: block;
+  background-color: #86c29c;
+  border-color: #86c29c;
+  color: black;
+  text-align: center;
+}
+
+#play_button {
+  margin-left: 2%;
+  margin-bottom: 2%;
+}
+
+#htp_button {
+  margin-left: 2%;
+  margin-bottom: 2%;
+}
+
+#attr_button {
+  margin-left: 2%;
+  margin-bottom: 2%;
+}
