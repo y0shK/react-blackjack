@@ -1,0 +1,10 @@
+0000000000000000000000000000000000000000 764bb3b6521f119451d1c6d057f2e0a9be4abc22 Yash Karandikar <ynkarandikar@gmail.com> 1639941640 -0800	commit (initial): first commit
+764bb3b6521f119451d1c6d057f2e0a9be4abc22 0000000000000000000000000000000000000000 Yash Karandikar <ynkarandikar@gmail.com> 1639941652 -0800	Branch: renamed refs/heads/master to refs/heads/main
+0000000000000000000000000000000000000000 764bb3b6521f119451d1c6d057f2e0a9be4abc22 Yash Karandikar <ynkarandikar@gmail.com> 1639941652 -0800	Branch: renamed refs/heads/master to refs/heads/main
+764bb3b6521f119451d1c6d057f2e0a9be4abc22 a1ccb69c3a4bee3d01f4e9bbbc3258ce7fc50d93 Yash Karandikar <ynkarandikar@gmail.com> 1639960038 -0800	commit: switch between components on button click
+a1ccb69c3a4bee3d01f4e9bbbc3258ce7fc50d93 a1ccb69c3a4bee3d01f4e9bbbc3258ce7fc50d93 Yash Karandikar <ynkarandikar@gmail.com> 1640024866 -0800	checkout: moving from main to single-page
+a1ccb69c3a4bee3d01f4e9bbbc3258ce7fc50d93 76d05dbc57dc63f2fc1c060f6900d2a9827b4157 Yash Karandikar <ynkarandikar@gmail.com> 1640028604 -0800	commit: change to single-page and add attributions button
+76d05dbc57dc63f2fc1c060f6900d2a9827b4157 a568ac09400bef399f08c88ea376a6c51ef7d6b5 Yash Karandikar <ynkarandikar@gmail.com> 1640050103 -0800	commit: stack buttons and put descriptions to side of page
+a568ac09400bef399f08c88ea376a6c51ef7d6b5 e10ec6df3e0f93d8400bfef6bf5be6357312d26b Yash Karandikar <ynkarandikar@gmail.com> 1640115681 -0800	commit: add play game button
+e10ec6df3e0f93d8400bfef6bf5be6357312d26b a1ccb69c3a4bee3d01f4e9bbbc3258ce7fc50d93 Yash Karandikar <ynkarandikar@gmail.com> 1640115778 -0800	checkout: moving from single-page to main
+a1ccb69c3a4bee3d01f4e9bbbc3258ce7fc50d93 e10ec6df3e0f93d8400bfef6bf5be6357312d26b Yash Karandikar <ynkarandikar@gmail.com> 1640115796 -0800	merge single-page: Fast-forward
