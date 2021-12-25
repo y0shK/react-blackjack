@@ -1,5 +1,6 @@
-.dealer_count {
+#game_interface {
     text-align: center;
+    float: center;
 }
 
 #blue_chip_hit {
