@@ -14,12 +14,11 @@ class Game extends React.Component {
         super(props);
 
         this.state = {
-            dealerCount: -1,
+            dealerCount: "TBD",
             playerCount: this._initial_hit(),
             playerCanAct: true,
             dealerHandAssigned: false,
             playerCanStand: true,
-            gameFinished: false,
             endGameState: "TBD",
         }
 
@@ -36,6 +35,7 @@ class Game extends React.Component {
 
         let count = 0;
 
+        // only generate new dealer count if the dealer hand has not already been assigned
         if (! this.state.dealerHandAssigned) {
             
             let val = Math.floor(Math.random() * (10-2) + 2);
@@ -69,14 +69,15 @@ class Game extends React.Component {
     
     // if the stand button is clicked,
     // player's turn is over
-    // also show the dealer count
+    // after the player ends their turn, call the function determining the winner
     _stand() {
 
         if (this.state.playerCanStand) {
+            
             // lock player's ability to hit
             this.setState({playerCanAct: false});
-
-            // show dealer count
+            this.setState({dealerHandAssigned: true}); // cannot reassign dealer hand multiple times
+            this.setState({playerCanStand: false}); // can't stand multiple times
 
             // react setState is async
             // to ensure that we call the function on the updated value,
@@ -87,14 +88,7 @@ class Game extends React.Component {
             this.setState({dealerCount: dealer}, () => {
                 this._set_game_end_state();
             });
-
-
-            this.setState({dealerHandAssigned: true}); // cannot reassign dealer hand multiple times
-            this.setState({playerCanStand: false}); // can't stand multiple times
-
-            // game is over - show end state
-            this.setState({gameFinished: true});
-            return this.state.dealerCount;
+           
         }
         
     }
@@ -105,8 +99,6 @@ class Game extends React.Component {
     // if player < 21 and dealer > 21, player wins
     // if player and dealer < 21, higher wins
     _set_game_end_state() {
-        console.log(this.state.playerCount);
-        console.log(this.state.dealerCount);
 
         if (this.state.playerCount > 21) {
             this.setState({endGameState: "loss"});
@@ -129,7 +121,6 @@ class Game extends React.Component {
     }
 
     render() {
-
 
         // because we set the dealer & player displays to react states and call them as html objects,
         // we know that they will modify as defined by this.setState (instead of modifying directly)
