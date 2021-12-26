@@ -77,14 +77,23 @@ class Game extends React.Component {
             this.setState({playerCanAct: false});
 
             // show dealer count
-            this.setState({dealerCount: this._getDealerCount()}, this.props.updateItem(this.state));
-            this.setState({dealerHandAssigned: true}); // cannot reassign dealer hand multiple times
 
+            // react setState is async
+            // to ensure that we call the function on the updated value,
+            // call the function inside setState
+            // https://stackoverflow.com/questions/36085726/why-is-setstate-in-reactjs-async-instead-of-sync
+
+            const dealer = this._getDealerCount();
+            this.setState({dealerCount: dealer}, () => {
+                this._set_game_end_state();
+            });
+
+
+            this.setState({dealerHandAssigned: true}); // cannot reassign dealer hand multiple times
             this.setState({playerCanStand: false}); // can't stand multiple times
 
             // game is over - show end state
             this.setState({gameFinished: true});
-            this._set_game_end_state();
             return this.state.dealerCount;
         }
         
