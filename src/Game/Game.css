@@ -3,6 +3,11 @@
     float: center;
 }
 
-#blue_chip_hit {
+.chip {
     height: 128px;
+}
+
+#end_state {
+    text-align: center;
+    float: center;
 }
