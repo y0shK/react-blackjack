@@ -33,37 +33,114 @@ class Game extends React.Component {
     // dealer hits until 17 or more - generate random numbers until count is high enough
     _getDealerCount() {
 
-        let count = 0;
-
         // only generate new dealer count if the dealer hand has not already been assigned
+        // follow same algorithm as for player count
+
         if (! this.state.dealerHandAssigned) {
             
-            let val = Math.floor(Math.random() * (10-2) + 2);
-            count = val;
+            // initial count
+            let val = Math.floor(Math.random() * (13-1) + 1);
+            let runningCount = 0;
 
-            while (count < 17) {
-                val = Math.floor(Math.random() * (10-2) + 2);
-                count = count + val;
+            if (val === 1) {
+                runningCount = 11;
+            }
+            else if (2 <= val && val <= 9) {
+                runningCount = val;
+            }
+            else if (val >= 10) {
+                runningCount = 10;
             }
 
-            return count;
+            // further hit values
+
+            while (runningCount < 17) {
+
+                val = Math.floor(Math.random() * (13-1) + 1);
+                
+                if (val === 1) {
+                    
+                    if (runningCount + val > 21) {
+                        runningCount = runningCount + 1;
+                    }
+                    else {
+                        runningCount = runningCount + 11;
+                    }
+
+                }
+                else if (2 <= val && val >= 9) {
+                    runningCount = runningCount + val;
+                }
+                else if (val >= 10) {
+                    runningCount = runningCount + 10;
+                }
+
+            }
+
+            return runningCount;
  
         }
     
     }
 
-    // player starts with a random count (2-10)
+    // three possibilities for initial hit:
+    // ace (11) -> 1
+    // number (2-9) -> 2-9
+    // face (10) -> 10-13 (10, jack, queen, king)
+    // generate a random number from 1-13, then add the corresponding value
+
     // this value is initialized when the state is created in the constructor
     _initial_hit() {
-        return Math.floor(Math.random() * (10-2) + 2);
+        
+        // generate a random number
+        const randomNum = Math.floor(Math.random() * (13-1) + 1);
+        let runningCount = 0;
+        
+        // add corresponding value
+        if (randomNum === 1) { // ace
+            runningCount = 11;
+        }
+        else if (2 <= randomNum && randomNum <= 9) {
+            runningCount = randomNum;
+        }
+        else if (randomNum >= 10) { // 10, jack, queen, king
+            runningCount = 10;
+        }
+
+        return runningCount;
     }
 
     // if the hit button is clicked,
     // call this function onClick
     // in the function, modify the state each time the click occurs
+
+    // create a randomNum var to store hit value
+    // same algorithm as above
+    // only difference - if ace=11 causes a bust, then set ace=1 (hard ace vs soft ace)
     _other_hit() {
         if (this.state.playerCanAct) {
-            this.setState({playerCount: this.state.playerCount + Math.floor(Math.random() * (10-2) + 2)})
+           
+            // generate a random number
+            const randomNum = Math.floor(Math.random() * (13-1) + 1);
+            let otherRunningCount = 0;
+           
+            if (randomNum === 1) { // draw an ace
+                if (this.state.playerCount + 11 > 21) { // make sure that ace does not cause a bust
+                    otherRunningCount = 1;
+                }
+                else {
+                    otherRunningCount = 11;
+                }
+            }
+            else if (2 <= randomNum && randomNum <= 9) {
+                otherRunningCount = randomNum;
+            }
+            else if (randomNum >= 10) { // 10, jack, queen, king
+                otherRunningCount = 10;
+            }
+
+            // instead of returning otherRunningCount, set the state to include the hit value
+            this.setState({playerCount: this.state.playerCount + otherRunningCount});
         }
     }
     
