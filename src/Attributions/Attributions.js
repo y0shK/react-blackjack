@@ -13,6 +13,7 @@ class Attributions extends React.Component {
     render() {
         return(
             <div>
+                <h2 class="attr_info">Attributions</h2>
                 <p id="attr_info">
                     All artwork is used without modification with either explicit permission or a Creative Commons license.
                     <li> <a href="https://opengameart.org/content/playing-card-\nassets-52-cards-deck-chips">Poker chips: mehrasaur, OpenGameArt  (CC0 1.0)</a></li>

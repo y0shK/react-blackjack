@@ -29,118 +29,82 @@ class Game extends React.Component {
         this._set_game_end_state = this._set_game_end_state.bind(this);
     }
 
+    // detail assigning player/dealer hand algorithm below
+    // provide boolean firstHit as parameter
+    // return the result of one hit - could be 2 to 10, jack/queen/king, ace=11
+    _hand_algorithm(firstHit, currentHandValue=0) {
+        
+        // generate a random value
+        // each random value corresponds to a particular hit value
+        // ace (11) -> 1
+        // number (2-9) -> 2-9
+        // face (10) -> 10-13 (10, jack, queen, king)
+
+        let rand_val = Math.floor(Math.random() * (13-1) + 1);
+        let hit_val = 0;
+
+        if (rand_val >= 2 && rand_val <= 10) {
+            hit_val = rand_val;
+        }
+        else if (rand_val > 10) {
+            hit_val = 10;
+        }
+        else { // rand_val = 1
+            // first hit: ace is always 11
+            // after first hit: ace can be 11 or 1
+            if (firstHit) {
+                hit_val = 11;
+            }
+            else {
+                if (currentHandValue + 11 > 21) { // if ace=11 causes a bust, set ace=1
+                    hit_val = 1;
+                }
+                else {
+                    hit_val = 11;
+                }
+            }
+        }
+
+        return hit_val;
+
+    }
+
     // game logic goes here
     // dealer hits until 17 or more - generate random numbers until count is high enough
     _getDealerCount() {
 
         // only generate new dealer count if the dealer hand has not already been assigned
-        // follow same algorithm as for player count
-
+        // to generate dearler count, keep adding to the running count using the algorithm until 17
         if (! this.state.dealerHandAssigned) {
+
+            let hit = this._hand_algorithm(true, 0);
             
-            // initial count
-            let val = Math.floor(Math.random() * (13-1) + 1);
-            let runningCount = 0;
-
-            if (val === 1) {
-                runningCount = 11;
-            }
-            else if (2 <= val && val <= 9) {
-                runningCount = val;
-            }
-            else if (val >= 10) {
-                runningCount = 10;
+            while (hit < 17) {
+                hit = hit + this._hand_algorithm(false, hit);
             }
 
-            // further hit values
-
-            while (runningCount < 17) {
-
-                val = Math.floor(Math.random() * (13-1) + 1);
-                
-                if (val === 1) {
-                    
-                    if (runningCount + val > 21) {
-                        runningCount = runningCount + 1;
-                    }
-                    else {
-                        runningCount = runningCount + 11;
-                    }
-
-                }
-                else if (2 <= val && val >= 9) {
-                    runningCount = runningCount + val;
-                }
-                else if (val >= 10) {
-                    runningCount = runningCount + 10;
-                }
-
-            }
-
-            return runningCount;
+            return hit;
  
         }
     
     }
 
-    // three possibilities for initial hit:
-    // ace (11) -> 1
-    // number (2-9) -> 2-9
-    // face (10) -> 10-13 (10, jack, queen, king)
-    // generate a random number from 1-13, then add the corresponding value
-
     // this value is initialized when the state is created in the constructor
     _initial_hit() {
-        
-        // generate a random number
-        const randomNum = Math.floor(Math.random() * (13-1) + 1);
-        let runningCount = 0;
-        
-        // add corresponding value
-        if (randomNum === 1) { // ace
-            runningCount = 11;
-        }
-        else if (2 <= randomNum && randomNum <= 9) {
-            runningCount = randomNum;
-        }
-        else if (randomNum >= 10) { // 10, jack, queen, king
-            runningCount = 10;
-        }
-
-        return runningCount;
+        return this._hand_algorithm(true, 0);
     }
 
     // if the hit button is clicked,
     // call this function onClick
     // in the function, modify the state each time the click occurs
-
-    // create a randomNum var to store hit value
-    // same algorithm as above
-    // only difference - if ace=11 causes a bust, then set ace=1 (hard ace vs soft ace)
     _other_hit() {
         if (this.state.playerCanAct) {
            
-            // generate a random number
-            const randomNum = Math.floor(Math.random() * (13-1) + 1);
-            let otherRunningCount = 0;
-           
-            if (randomNum === 1) { // draw an ace
-                if (this.state.playerCount + 11 > 21) { // make sure that ace does not cause a bust
-                    otherRunningCount = 1;
-                }
-                else {
-                    otherRunningCount = 11;
-                }
-            }
-            else if (2 <= randomNum && randomNum <= 9) {
-                otherRunningCount = randomNum;
-            }
-            else if (randomNum >= 10) { // 10, jack, queen, king
-                otherRunningCount = 10;
-            }
+            let newHitValue = this._hand_algorithm(false, this.state.playerCount);
 
-            // instead of returning otherRunningCount, set the state to include the hit value
-            this.setState({playerCount: this.state.playerCount + otherRunningCount});
+            // instead of returning the old count + the new value, 
+            // set the state to include the new hit value
+            this.setState({playerCount: this.state.playerCount + newHitValue});
         }
     }
     
@@ -213,16 +177,15 @@ class Game extends React.Component {
 
                 <img src={purple_chip} alt="stand option" className="chip"
                 onClick={this._stand}>
-
                 </img>
 
                 Player count: {this.state.playerCount}
-
                 </p>
 
                 <p id="end_state">
                     End game state: {this.state.endGameState}
                 </p>
+
                 
             </div>
         );
