@@ -15,24 +15,30 @@ class Game extends React.Component {
 
         this.state = {
             dealerCount: "TBD",
-            playerCount: this._initial_hit(),
+            playerCount: this._initialHit(),
             playerCanAct: true,
             dealerHandAssigned: false,
             playerCanStand: true,
             endGameState: "TBD",
         }
 
+        this._handAlgorithm = this._handAlgorithm.bind(this);
         this._getDealerCount = this._getDealerCount.bind(this);
-        this._initial_hit = this._initial_hit.bind(this);
-        this._other_hit = this._other_hit.bind(this);
+        this._initialHit = this._initialHit.bind(this);
+        this._otherHit = this._otherHit.bind(this);
         this._stand = this._stand.bind(this);
-        this._set_game_end_state = this._set_game_end_state.bind(this);
+        this._setGameEndState = this._setGameEndState.bind(this);
+        this._replay = this._replay.bind(this);
     }
 
     // detail assigning player/dealer hand algorithm below
     // provide boolean firstHit as parameter
     // return the result of one hit - could be 2 to 10, jack/queen/king, ace=11
-    _hand_algorithm(firstHit, currentHandValue=0) {
+
+    // https://stackoverflow.com/questions/10841737/boolean-argument-not-passing-correctly
+    // default parameter - https://stackoverflow.com/questions/894860/set-a-default-parameter-value-for-a-javascript-function?rq=1
+
+    _handAlgorithm(firstHit, currentHandValue=0) {
         
         // generate a random value
         // each random value corresponds to a particular hit value
@@ -40,32 +46,32 @@ class Game extends React.Component {
         // number (2-9) -> 2-9
         // face (10) -> 10-13 (10, jack, queen, king)
 
-        let rand_val = Math.floor(Math.random() * (13-1) + 1);
-        let hit_val = 0;
+        let randVal = Math.floor(Math.random() * (13-1) + 1);
+        let hitVal = 0;
 
-        if (rand_val >= 2 && rand_val <= 10) {
-            hit_val = rand_val;
+        if (randVal >= 2 && randVal <= 10) {
+            hitVal = randVal;
         }
-        else if (rand_val > 10) {
-            hit_val = 10;
+        else if (randVal > 10) {
+            hitVal = 10;
         }
-        else { // rand_val = 1
+        else { // randVal = 1
             // first hit: ace is always 11
             // after first hit: ace can be 11 or 1
             if (firstHit) {
-                hit_val = 11;
+                hitVal = 11;
             }
             else {
                 if (currentHandValue + 11 > 21) { // if ace=11 causes a bust, set ace=1
-                    hit_val = 1;
+                    hitVal = 1;
                 }
                 else {
-                    hit_val = 11;
+                    hitVal = 11;
                 }
             }
         }
 
-        return hit_val;
+        return hitVal;
 
     }
 
@@ -77,10 +83,10 @@ class Game extends React.Component {
         // to generate dearler count, keep adding to the running count using the algorithm until 17
         if (! this.state.dealerHandAssigned) {
 
-            let hit = this._hand_algorithm(true, 0);
+            let hit = this._handAlgorithm(true, 0);
             
             while (hit < 17) {
-                hit = hit + this._hand_algorithm(false, hit);
+                hit = hit + this._handAlgorithm(false, hit);
             }
 
             return hit;
@@ -90,21 +96,28 @@ class Game extends React.Component {
     }
 
     // this value is initialized when the state is created in the constructor
-    _initial_hit() {
-        return this._hand_algorithm(true, 0);
+    _initialHit() {
+        return this._handAlgorithm(true, 0);
     }
 
     // if the hit button is clicked,
     // call this function onClick
     // in the function, modify the state each time the click occurs
-    _other_hit() {
+    _otherHit() {
         if (this.state.playerCanAct) {
            
-            let newHitValue = this._hand_algorithm(false, this.state.playerCount);
+            let newHitValue = this._handAlgorithm(false, this.state.playerCount);
 
             // instead of returning the old count + the new value, 
             // set the state to include the new hit value
-            this.setState({playerCount: this.state.playerCount + newHitValue});
+            // only include the new hit value if the count is not already above 21
+            if (this.state.playerCount <= 21) {
+                this.setState({playerCount: this.state.playerCount + newHitValue});
+            }
+            else {
+                this.setState({playerCount: this.state.playerCount});
+            }
+            
         }
     }
     
@@ -127,7 +140,7 @@ class Game extends React.Component {
 
             const dealer = this._getDealerCount();
             this.setState({dealerCount: dealer}, () => {
-                this._set_game_end_state();
+                this._setGameEndState();
             });
            
         }
@@ -139,7 +152,7 @@ class Game extends React.Component {
     // if player > 21, automatic loss
     // if player < 21 and dealer > 21, player wins
     // if player and dealer < 21, higher wins
-    _set_game_end_state() {
+    _setGameEndState() {
 
         if (this.state.playerCount > 21) {
             this.setState({endGameState: "loss"});
@@ -161,6 +174,23 @@ class Game extends React.Component {
 
     }
 
+    // allow user to replay game
+    // if a replay button is clicked at the end of the game,
+    // reset all states back to default values
+    // https://stackoverflow.com/questions/46617980/how-to-reload-a-page-state-in-a-react-app
+    _replay() {
+
+        this.setState({
+            dealerCount: "TBD",
+            playerCount: this._initialHit(),
+            playerCanAct: true,
+            dealerHandAssigned: false,
+            playerCanStand: true,
+            endGameState: "TBD",
+        });
+
+    }
+
     render() {
 
         // because we set the dealer & player displays to react states and call them as html objects,
@@ -173,7 +203,7 @@ class Game extends React.Component {
                 Dealer count: {this.state.dealerCount}
                 
                 <img src={blue_chip} alt="hit option" className="chip"
-                onClick={this._other_hit}></img>
+                onClick={this._otherHit}></img>
 
                 <img src={purple_chip} alt="stand option" className="chip"
                 onClick={this._stand}>
@@ -184,9 +214,12 @@ class Game extends React.Component {
 
                 <p id="end_state">
                     End game state: {this.state.endGameState}
+
+                    <button id="replay_button" onClick={this._replay}>
+                        Play again!
+                    </button>
                 </p>
 
-                
             </div>
         );
     }
