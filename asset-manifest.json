@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/react-blackjack/static/css/main.942971ab.css",
+    "main.js": "/react-blackjack/static/js/main.f605886b.js",
+    "static/js/787.cfd8f164.chunk.js": "/react-blackjack/static/js/787.cfd8f164.chunk.js",
+    "static/media/blue_chip.png": "/react-blackjack/static/media/blue_chip.464e53472500c4e5409b.png",
+    "static/media/purple_chip.png": "/react-blackjack/static/media/purple_chip.75b0482bee347a2b1b37.png",
+    "index.html": "/react-blackjack/index.html",
+    "main.942971ab.css.map": "/react-blackjack/static/css/main.942971ab.css.map",
+    "main.f605886b.js.map": "/react-blackjack/static/js/main.f605886b.js.map",
+    "787.cfd8f164.chunk.js.map": "/react-blackjack/static/js/787.cfd8f164.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.942971ab.css",
+    "static/js/main.f605886b.js"
+  ]
+}
